@@ -1,21 +1,22 @@
 require "scenic_oracle_pk/version"
-require "scenic/command_recorder"
+require "scenic/adapters/oracle_enhanced"
 
 module ScenicOraclePk
   class Error < StandardError; end
 end
 
 module Scenic
-  module CommandRecorder
-    def create_pk_for_view(object:, key: 'id')
-      key_name = [object.to_s.split('.').last, key.to_s, 'pk'].join('_')
-      say_with_time do
-        suppress_messages do
-          execute <<-SQL
-          ALTER VIEW #{object} ADD CONSTRAINT #{key_name} PRIMARY KEY (#{key}) DISABLE
-          SQL
+  module Adapters
+    class OracleEnhanced
+      def create_pk_for_view(name, key = 'id')
+        key_name = [name.to_s.split('.').last, key.to_s, 'pk'].join('_')
+        say_with_time %q[Primary key "#{key_name}" created for "#{name}".] do
+          suppress_messages do
+            execute <<-SQL
+            ALTER VIEW #{quote_table_name(name)} ADD CONSTRAINT #{key_name} PRIMARY KEY (#{key}) DISABLE
+            SQL
+          end
         end
-        "Primary key #{key_name} created for #{object}."
       end
     end
   end
