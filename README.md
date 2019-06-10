@@ -20,17 +20,23 @@ Or install it yourself as:
 
 ## Usage
 
-Within your migration's `change` method, either by itself, or directly after a `create_view` or `update_view` directive, you may add these lines:
+Within your migration's `change` method, either by itself, or directly after a `create_view` or `update_view` directive, you may add this line:
 
 ```rb
-reversible do |change|
-  change.up { create_pk_for_view(:view_name, :column_name) }
-end
+create_pk_for_view(:view_name, :column_name)
 ```
 
 The `column_name` argument  is optional, and defaults to `:id`.
 
-Running this command will result in a primary key in your database view that Rails can interrogate and use to inform your ActiveRecord-based model for that view. This means that you won't need to use the `self.primary_key = :foo` trick that is usually required when a model uses a database view as its data store.
+Calling this method will add a primary key to your database view that Rails can interrogate and use to inform your ActiveRecord-based model for that view. This means that you won't need to use the `self.primary_key = :foo` trick that is usually required when a model uses a database view as its data source.
+
+If you need to remove this primary key (say, in a `#down` migration method), you may use the inverse:
+
+```rb
+remove_pk_for_view(:view_name, :column_name)
+```
+
+Both of these methods are reversible.
 
 ## Development
 
