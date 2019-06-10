@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-Within your migration's `change` method, either by itself, or directly after a `create_view` or `update_view` directive, you may add this line:
+Within your migration's `change` method, either by itself, or directly after a `create_view` or `update_view` directive, add this line:
 
 ```rb
 create_pk_for_view(:view_name, :column_name)
