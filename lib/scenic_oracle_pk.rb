@@ -1,5 +1,6 @@
 require "scenic_oracle_pk/version"
 require "scenic/statements"
+require "scenic/command_recorder"
 
 module ScenicOraclePk
   class Error < StandardError; end
