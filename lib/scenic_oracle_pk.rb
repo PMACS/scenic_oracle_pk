@@ -14,11 +14,30 @@ module Scenic
       ALTER VIEW #{quote_table_name(name)} ADD CONSTRAINT #{key_name} PRIMARY KEY (#{key}) DISABLE
       SQL
     end
+
+    def remove_pk_for_view(name, key = 'id')
+      key_name = [name.to_s.split('.').last, key.to_s, 'pk'].join('_')
+      execute <<-SQL
+      ALTER VIEW #{quote_table_name(name)} DROP CONSTRAINT #{key_name} PRIMARY KEY (#{key}) DISABLE
+      SQL
+    end
   end
   
   module CommandRecorder
     def create_pk_for_view(*args)
       record(:create_pk_for_view, args)
+    end
+
+    def remove_pk_for_view(*args)
+      record(:remove_pk_for_view, args)
+    end
+
+    def invert_create_pk_for_view(*args)
+      [:remove_pk_for_view, args]
+    end
+
+    def invert_remove_pk_for_view(*args)
+      [:create_pk_for_view, args]
     end
   end
 end
