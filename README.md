@@ -1,8 +1,6 @@
 # ScenicOraclePk
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/scenic_oracle_pk`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Add a primary key to your Scenic-generated database views. Tested in Oracle, may work elsewhere, too.
 
 ## Installation
 
@@ -22,7 +20,17 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Within your migration's `change` method, either by itself, or directly after a `create_view` or `update_view` directive, you may add these lines:
+
+```rb
+reversible do |change|
+  change.up { create_pk_for_view(:view_name, :column_name) }
+end
+```
+
+The `column_name` argument  is optional, and defaults to `:id`.
+
+Running this command will result in a primary key in your database view that Rails can interrogate and use to inform your ActiveRecord-based model for that view. This means that you won't need to use the `self.primary_key = :foo` trick that is usually required when a model uses a database view as its data store.
 
 ## Development
 
